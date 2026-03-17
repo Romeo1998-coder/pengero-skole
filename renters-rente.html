@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PengeRo Skole — Renters rente</title>
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FAFAF5;--bg2:#F2F0E8;--white:#FFF;--teal:#1B7A6E;--teal-l:#2A9A8C;--teal-p:#E0F2EE;--teal-d:#0F4A42;
+--amber:#D4882A;--amber-l:#F0C97A;--amber-p:#FFF5E0;--amber-d:#8A5518;
+--coral:#D85A42;--coral-p:#FDEAE6;
+--ink:#1A1D20;--ink2:#3A3F45;--gray:#6B7280;--gray-l:#9CA3AF;--gray-p:#E5E7EB;--gray-pp:#F3F4F6;
+--green:#16A34A;--green-p:#DCFCE7;
+--red:#DC2626;--red-p:#FEE2E2;
+--serif:'Vollkorn',Georgia,serif;--sans:'Work Sans',-apple-system,sans-serif;
+--radius:12px;--radius-s:8px;
+--shadow:0 1px 4px rgba(0,0,0,.04);--shadow-m:0 4px 20px rgba(0,0,0,.06);
+--ease:.3s cubic-bezier(.25,.46,.45,.94);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;font-size:15px}
+button{font-family:var(--sans);cursor:pointer;border:none}a{color:inherit;text-decoration:none}
+
+/* LAYOUT */
+.app{display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--teal-d);color:white;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.main{margin-left:280px;flex:1;min-height:100vh}
+.content{max-width:820px;margin:0 auto;padding:40px 32px 80px}
+
+/* SIDEBAR */
+.sb-header{padding:24px 20px 16px}
+.sb-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700}
+.sb-logo em{color:var(--amber-l);font-style:italic}
+.sb-sub{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+.sb-nav{flex:1;padding:8px 10px}
+.sb-section{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.35);padding:16px 12px 6px;font-weight:700}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-s);font-size:.88rem;font-weight:500;color:rgba(255,255,255,.7);transition:all var(--ease);margin-bottom:2px;cursor:pointer}
+.sb-item:hover{background:rgba(255,255,255,.08);color:white}
+.sb-item.active{background:rgba(255,255,255,.12);color:white;font-weight:600}
+.sb-item .sb-emoji{font-size:1.1rem;width:24px;text-align:center}
+.sb-item .sb-badge{margin-left:auto;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:50px;font-size:.68rem;font-weight:700}
+.sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:.72rem;color:rgba(255,255,255,.3)}
+
+.sb-role-toggle{display:flex;margin:0 10px 8px;background:rgba(255,255,255,.08);border-radius:var(--radius-s);padding:3px}
+.sb-role-btn{flex:1;padding:7px;border-radius:6px;text-align:center;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);background:none;transition:all var(--ease)}
+.sb-role-btn.active{background:var(--teal);color:white}
+
+/* PAGE */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--teal-p);color:var(--teal);padding:4px 12px;border-radius:50px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.page h1{font-family:var(--serif);font-size:2rem;font-weight:700;line-height:1.2;color:var(--ink);margin-bottom:8px}
+.page h2{font-family:var(--serif);font-size:1.45rem;font-weight:700;color:var(--teal-d);margin:32px 0 12px;line-height:1.3}
+.page h3{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--amber-d);margin:24px 0 8px}
+.page-sub{font-size:1rem;color:var(--gray);margin-bottom:28px;line-height:1.7}
+p{margin-bottom:12px}
+
+/* CARDS & BOXES */
+.info-box{background:var(--teal-p);border-left:4px solid var(--teal);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:16px 20px;margin:16px 0;font-size:.92rem;line-height:1.65}
+.info-box strong{color:var(--teal-d)}
+.tip-box{background:var(--amber-p);border-left:4px solid var(--amber);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:16px 20px;margin:16px 0;font-size:.92rem;line-height:1.65}
+.tip-box strong{color:var(--amber-d)}
+.warn-box{background:var(--coral-p);border-left:4px solid var(--coral);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:16px 20px;margin:16px 0;font-size:.92rem}
+
+.card{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:24px;margin:16px 0;box-shadow:var(--shadow)}
+.card h4{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:8px}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.stat-card{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-num{font-family:var(--serif);font-size:1.8rem;font-weight:700;color:var(--teal);line-height:1.1}
+.stat-label{font-size:.75rem;color:var(--gray);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem}
+th{background:var(--teal-d);color:white;padding:10px 14px;text-align:left;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:10px 14px;border-bottom:1px solid var(--gray-p)}
+tr:nth-child(even) td{background:var(--gray-pp)}
+
+/* INTERACTIVE CALC */
+.calc-wrap{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:28px;margin:20px 0;box-shadow:var(--shadow-m)}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.calc-field label{display:block;font-size:.82rem;font-weight:600;color:var(--ink2);margin-bottom:4px}
+.calc-field .hint{font-size:.72rem;color:var(--gray-l);margin-bottom:6px}
+.calc-input{width:100%;padding:10px 14px;border:1.5px solid var(--gray-p);border-radius:var(--radius-s);font-family:var(--sans);font-size:.95rem;color:var(--ink);transition:border-color var(--ease)}
+.calc-input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(27,122,110,.1)}
+.range-wrap{position:relative}
+.range-wrap input[type=range]{width:100%;margin:6px 0;accent-color:var(--teal)}
+.range-val{position:absolute;right:0;top:-2px;font-size:.85rem;font-weight:700;color:var(--teal)}
+.calc-result{background:var(--teal-p);border-radius:var(--radius);padding:20px;margin:16px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.calc-result-item{text-align:center}
+.calc-result-num{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--teal-d)}
+.calc-result-label{font-size:.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.chart-container{margin:16px 0;background:var(--white);border-radius:var(--radius-s);border:1px solid var(--gray-p);overflow:hidden}
+.chart-container canvas{width:100%;height:260px;display:block}
+.chart-legend{display:flex;gap:20px;padding:10px 16px;font-size:.78rem;color:var(--gray);border-top:1px solid var(--gray-p)}
+.chart-legend span{display:flex;align-items:center;gap:6px}
+.chart-legend .dot{width:10px;height:10px;border-radius:3px}
+
+/* QUIZ */
+.quiz-q{margin:20px 0}
+.quiz-q-text{font-family:var(--serif);font-size:1.05rem;font-weight:600;margin-bottom:12px;line-height:1.4}
+.quiz-q-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;font-size:.78rem;font-weight:700;margin-right:8px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:12px 16px;border:1.5px solid var(--gray-p);border-radius:var(--radius-s);background:var(--white);font-size:.92rem;text-align:left;transition:all var(--ease);display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dis){border-color:var(--teal);background:var(--teal-p)}
+.quiz-opt .opt-letter{width:26px;height:26px;border-radius:6px;background:var(--gray-pp);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:var(--gray);flex-shrink:0;transition:all var(--ease)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-p)}
+.quiz-opt.correct .opt-letter{background:var(--green);color:white}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-p)}
+.quiz-opt.wrong .opt-letter{background:var(--red);color:white}
+.quiz-opt.dis{opacity:.4;cursor:not-allowed}
+.quiz-fb{margin-top:10px;padding:12px 16px;border-radius:var(--radius-s);font-size:.88rem;line-height:1.5;display:none}
+.quiz-fb.show{display:block;animation:fadeIn .3s}
+.quiz-fb.ok{background:var(--green-p);color:#15803D}
+.quiz-fb.no{background:var(--red-p);color:#991B1B}
+.quiz-score{text-align:center;padding:32px;background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);margin:24px 0}
+.quiz-score-num{font-family:var(--serif);font-size:3rem;font-weight:700;color:var(--teal)}
+.quiz-score-label{font-size:1rem;color:var(--gray);margin-top:4px}
+
+/* COMPARISON */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.compare-card{background:var(--white);border:2px solid var(--gray-p);border-radius:var(--radius);padding:24px;text-align:center;transition:all var(--ease)}
+.compare-card.winner{border-color:var(--teal);box-shadow:0 0 0 3px rgba(27,122,110,.1)}
+.compare-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 10px}
+.compare-name{font-family:var(--serif);font-size:1.1rem;font-weight:700}
+.compare-detail{font-size:.82rem;color:var(--gray);margin-top:2px}
+.compare-value{font-family:var(--serif);font-size:2rem;font-weight:700;color:var(--teal);margin-top:12px}
+.compare-sub{font-size:.75rem;color:var(--gray-l)}
+
+/* BTNS */
+.btn-primary{background:var(--teal);color:white;padding:12px 28px;border-radius:50px;font-size:.92rem;font-weight:700;transition:all var(--ease);display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--teal-l);transform:translateY(-1px)}
+.btn-outline{background:none;border:1.5px solid var(--gray-p);color:var(--ink);padding:10px 22px;border-radius:50px;font-size:.88rem;font-weight:600;transition:all var(--ease)}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.nav-btns{display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;border-top:1px solid var(--gray-p)}
+
+/* STEP INDICATOR */
+.steps{display:flex;gap:6px;margin:20px 0}
+.step-dot{width:40px;height:5px;border-radius:3px;background:var(--gray-p);transition:all var(--ease)}
+.step-dot.done{background:var(--teal)}
+.step-dot.current{background:var(--amber);width:56px}
+
+/* TIMELINE */
+.timeline{margin:20px 0}
+.tl-item{display:flex;gap:16px;padding:12px 0}
+.tl-time{width:60px;flex-shrink:0;font-size:.78rem;font-weight:700;color:var(--teal);padding-top:2px}
+.tl-content{flex:1;padding-bottom:12px;border-bottom:1px solid var(--gray-p)}
+.tl-item:last-child .tl-content{border:none}
+.tl-title{font-weight:700;font-size:.92rem;margin-bottom:2px}
+.tl-desc{font-size:.85rem;color:var(--gray)}
+
+/* MOBILE */
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;z-index:200;background:var(--teal-d);padding:12px 16px;align-items:center;justify-content:space-between}
+.mobile-header .sb-logo{font-size:1.1rem}
+.burger{background:none;color:white;font-size:1.4rem;border:none}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .main{margin-left:0}
+  .mobile-header{display:flex}
+  .content{padding:72px 16px 60px}
+  .calc-grid,.compare-grid,.stat-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE HEADER -->
+<div class="mobile-header">
+  <div class="sb-logo">Penge<em>Ro</em> Skole</div>
+  <button class="burger" onclick="toggleSidebar()">☰</button>
+</div>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">Penge<em>Ro</em> Skole</div>
+    <div class="sb-sub">Renters rente</div>
+  </div>
+  <div class="sb-role-toggle">
+    <button class="sb-role-btn active" onclick="setRole('teacher',this)">Lærer</button>
+    <button class="sb-role-btn" onclick="setRole('student',this)">Elev</button>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Oversigt</div>
+    <div class="sb-item active" onclick="goTo('overview')"><span class="sb-emoji">📋</span>Forløbsoversigt</div>
+    <div class="sb-section">Lektioner</div>
+    <div class="sb-item" onclick="goTo('L1')"><span class="sb-emoji">1️⃣</span>Hvad er rente?<span class="sb-badge">45 min</span></div>
+    <div class="sb-item" onclick="goTo('L2')"><span class="sb-emoji">2️⃣</span>Lineær vs. eksponentiel<span class="sb-badge">45 min</span></div>
+    <div class="sb-item" onclick="goTo('L3')"><span class="sb-emoji">3️⃣</span>Oliver vs. Freja<span class="sb-badge">45 min</span></div>
+    <div class="sb-item" onclick="goTo('L4')"><span class="sb-emoji">4️⃣</span>Min opsparingsplan<span class="sb-badge">45 min</span></div>
+    <div class="sb-section">Evaluering</div>
+    <div class="sb-item" onclick="goTo('quiz')"><span class="sb-emoji">🧠</span>Quiz (10 spørgsmål)</div>
+    <div class="sb-section">Værktøjer</div>
+    <div class="sb-item" onclick="goTo('calc')"><span class="sb-emoji">🔢</span>Beregner</div>
+  </div>
+  <div class="sb-footer">PengeRo Skole · pengero.dk<br>Uddannelsesmateriale — ikke rådgivning</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="content">
+
+    <!-- ===== OVERVIEW ===== -->
+    <div class="page active" id="p-overview">
+      <span class="page-tag">📋 Forløbsoversigt</span>
+      <h1>Renters rente — din hemmelige superkraft</h1>
+      <p class="page-sub">Et komplet undervisningsforløb i 4 lektioner om eksponentiel vækst, opsparing og privatøkonomi. Kobler matematik til virkelige økonomiske beslutninger.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Lektioner</div></div>
+        <div class="stat-card"><div class="stat-num">180</div><div class="stat-label">Minutter i alt</div></div>
+        <div class="stat-card"><div class="stat-num">8.–9.</div><div class="stat-label">Klassetrin</div></div>
+      </div>
+
+      <div class="info-box"><strong>Kobling til Fælles Mål:</strong> "Undervisningen skal lede frem mod, at eleverne har tilegnet sig kundskaber og færdigheder, der sætter dem i stand til at arbejde med problemstillinger vedrørende dagligdagen, bl.a. i forbindelse med privatøkonomi, bolig og transport."</div>
+
+      <h2>Læringsmål</h2>
+      <p>Efter forløbet kan eleven:</p>
+      <div class="card">
+        <p>✦ Forklare forskellen på lineær og eksponentiel vækst</p>
+        <p>✦ Beregne renters rente for simple opsparingsscenarier</p>
+        <p>✦ Tegne og aflæse grafer der viser vækst over tid</p>
+        <p>✦ Vurdere effekten af tid, beløb og rente på opsparing</p>
+        <p>✦ Argumentere for, hvorfor tidlig start har stor betydning</p>
+      </div>
+
+      <h2>Kompetencer der trænes</h2>
+      <table>
+        <tr><th>Kompetence</th><th>Eksempel i forløbet</th></tr>
+        <tr><td>Procentregning</td><td>Beregning af renter og afkast</td></tr>
+        <tr><td>Funktionel tænkning</td><td>Lineær vs. eksponentiel vækst</td></tr>
+        <tr><td>Grafisk fremstilling</td><td>Tegning af vækstgrafer</td></tr>
+        <tr><td>Modellering</td><td>Opsparingsmodeller med beregner</td></tr>
+        <tr><td>Problembehandling</td><td>Oliver vs. Freja-casen</td></tr>
+        <tr><td>Ræsonnement</td><td>Argumentation for økonomiske valg</td></tr>
+      </table>
+
+      <h2 class="teacher-only">Lektionsoversigt</h2>
+      <div class="timeline teacher-only">
+        <div class="tl-item"><div class="tl-time">L1</div><div class="tl-content"><div class="tl-title">Hvad er rente?</div><div class="tl-desc">Intro til rente og renters rente. Sneboldsanalogien. Første beregninger.</div></div></div>
+        <div class="tl-item"><div class="tl-time">L2</div><div class="tl-content"><div class="tl-title">Lineær vs. eksponentiel vækst</div><div class="tl-desc">To scenarier sammenlignet. Grafer tegnet. Forskellen afsløret.</div></div></div>
+        <div class="tl-item"><div class="tl-time">L3</div><div class="tl-content"><div class="tl-title">Oliver vs. Freja — hvem vinder?</div><div class="tl-desc">Case-baseret: tid vs. beløb. Den store overraskelse.</div></div></div>
+        <div class="tl-item"><div class="tl-time">L4</div><div class="tl-content"><div class="tl-title">Min opsparingsplan</div><div class="tl-desc">Personlig plan, refleksion og evalueringsquiz.</div></div></div>
+      </div>
+
+      <div class="tip-box teacher-only"><strong>Differentiering:</strong> Svage elever kan bruge beregnerværktøjet i stedet for manuelle beregninger. Stærke elever kan udfordres med: "Opstil formlen for renters rente og forklar hvert bogstav."</div>
+
+      <div class="nav-btns">
+        <div></div>
+        <button class="btn-primary" onclick="goTo('L1')">Start lektion 1 →</button>
+      </div>
+    </div>
+
+    <!-- ===== LEKTION 1 ===== -->
+    <div class="page" id="p-L1">
+      <span class="page-tag">Lektion 1 · 45 min</span>
+      <h1>Hvad er rente?</h1>
+      <p class="page-sub">Eleverne lærer hvad rente er, og opdager at renten selv begynder at give rente — sneboldeffekten.</p>
+
+      <div class="steps"><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+
+      <div class="tip-box teacher-only"><strong>Lærerens plan (45 min):</strong><br>0–10 min: Introduktion — spørg klassen: "1.000 kr. til 3% rente, hvad efter 1 år?"<br>10–20 min: Udvid til 2 år. Opdagelse: renten er højere i år 2. Introducer renters rente.<br>20–40 min: Eleverne beregner med værktøjet herunder.<br>40–45 min: Opsamling — "hvad overraskede jer?"</div>
+
+      <div class="info-box"><strong>Sneboldanalogien:</strong> Renters rente er som en snebold der ruller ned ad en bakke. Den starter lille, men for hvert rul samler den mere sne. Jo større den bliver, jo mere samler den. I starten er forskellen lille — men efter mange rul er snebolden enorm.</div>
+
+      <h2>Beregningsøvelse</h2>
+      <p>Sæt 1.000 kr. i banken til 5% rente. Beregn for hvert år:</p>
+
+      <div class="calc-wrap">
+        <h4>Renteberegner</h4>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Startbeløb (kr.)</label>
+            <input type="number" class="calc-input" id="L1start" value="1000" min="100" step="100" oninput="calcL1()">
+          </div>
+          <div class="calc-field">
+            <label>Årlig rente (%)</label>
+            <div class="range-wrap">
+              <span class="range-val" id="L1rateVal">5%</span>
+              <input type="range" min="1" max="15" value="5" id="L1rate" oninput="calcL1()">
+            </div>
+          </div>
+        </div>
+        <table id="L1table"></table>
+        <div class="chart-container">
+          <canvas id="L1chart"></canvas>
+          <div class="chart-legend">
+            <span><span class="dot" style="background:var(--teal)"></span>Samlet beløb</span>
+            <span><span class="dot" style="background:var(--amber)"></span>Din indbetaling</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Spørgsmål</h2>
+      <div class="card">
+        <p><strong>a)</strong> Hvor meget rente fik du i år 1? <em>(Brug tabellen ovenfor)</em></p>
+        <p><strong>b)</strong> Hvor meget rente fik du i år 10?</p>
+        <p><strong>c)</strong> Hvorfor er renten i år 10 højere end i år 1? Forklar med dine egne ord.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-outline" onclick="goTo('overview')">← Oversigt</button>
+        <button class="btn-primary" onclick="goTo('L2')">Lektion 2 →</button>
+      </div>
+    </div>
+
+    <!-- ===== LEKTION 2 ===== -->
+    <div class="page" id="p-L2">
+      <span class="page-tag">Lektion 2 · 45 min</span>
+      <h1>Lineær vs. eksponentiel vækst</h1>
+      <p class="page-sub">Hvad sker der, når penge bare ligger under madrassen — sammenlignet med når de investeres?</p>
+
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+
+      <div class="tip-box teacher-only"><strong>Lærerens plan:</strong><br>0–10 min: Præsenter scenariet. Spørg: "Hvem har flest efter 30 år?"<br>10–30 min: Eleverne beregner og tegner begge kurver.<br>30–40 min: Analyse — hvornår skiller kurverne?<br>40–45 min: "Hvad er det ved eksponentiel vækst der gør forskellen?"</div>
+
+      <div class="info-box"><strong>Scenariet:</strong> Person A lægger 100 kr. under madrassen hver måned. Person B investerer 100 kr./md til 7% årligt afkast. Hvem har flest penge efter 30 år?</div>
+
+      <div class="calc-wrap">
+        <h4>Sammenligning: Madras vs. Investering</h4>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Månedligt beløb (kr.)</label>
+            <input type="number" class="calc-input" id="L2monthly" value="100" min="50" step="50" oninput="calcL2()">
+          </div>
+          <div class="calc-field">
+            <label>Årligt afkast (%)</label>
+            <div class="range-wrap">
+              <span class="range-val" id="L2rateVal">7%</span>
+              <input type="range" min="1" max="15" value="7" id="L2rate" oninput="calcL2()">
+            </div>
+          </div>
+        </div>
+        <table id="L2table"></table>
+        <div class="chart-container">
+          <canvas id="L2chart"></canvas>
+          <div class="chart-legend">
+            <span><span class="dot" style="background:var(--teal)"></span>Med investering</span>
+            <span><span class="dot" style="background:var(--gray-l)"></span>Under madrassen</span>
+            <span><span class="dot" style="background:var(--amber);opacity:.3"></span>Forskellen</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Spørgsmål</h2>
+      <div class="card">
+        <p><strong>a)</strong> Hvornår begynder de to kurver at skille sig markant?</p>
+        <p><strong>b)</strong> Hvad er forskellen i kr. efter 30 år?</p>
+        <p><strong>c)</strong> Forklar med dine egne ord, hvorfor Person B ender med langt mere.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-outline" onclick="goTo('L1')">← Lektion 1</button>
+        <button class="btn-primary" onclick="goTo('L3')">Lektion 3 →</button>
+      </div>
+    </div>
+
+    <!-- ===== LEKTION 3 ===== -->
+    <div class="page" id="p-L3">
+      <span class="page-tag">Lektion 3 · 45 min</span>
+      <h1>Oliver vs. Freja — hvem vinder?</h1>
+      <p class="page-sub">En overraskende case om tid vs. beløb. Resultatet ændrer elevernes opfattelse af opsparing.</p>
+
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div></div>
+
+      <div class="tip-box teacher-only"><strong>Lærerens plan:</strong><br>0–5 min: Præsenter casen. Tag en håndsoprækning: hvem tror Oliver vinder? Hvem tror Freja?<br>5–25 min: Eleverne beregner i par.<br>25–40 min: Afsløring og diskussion.<br>40–45 min: "Hvad ville du selv gøre med 200 kr./md fra du er 18?"</div>
+
+      <div class="info-box"><strong>Casen:</strong> Oliver investerer 500 kr./md fra han er 18 år. Freja investerer 1.000 kr./md fra hun er 35 år. Begge stopper som 65-årige. Renten er 7% om året. <em>Hvem har flest penge?</em></div>
+
+      <div class="calc-wrap">
+        <h4>Interaktiv sammenligning</h4>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Oliver: kr./md</label>
+            <input type="number" class="calc-input" id="L3oliver" value="500" min="100" step="100" oninput="calcL3()">
+          </div>
+          <div class="calc-field">
+            <label>Oliver: startalder</label>
+            <input type="number" class="calc-input" id="L3oliverAge" value="18" min="15" max="40" oninput="calcL3()">
+          </div>
+          <div class="calc-field">
+            <label>Freja: kr./md</label>
+            <input type="number" class="calc-input" id="L3freja" value="1000" min="100" step="100" oninput="calcL3()">
+          </div>
+          <div class="calc-field">
+            <label>Freja: startalder</label>
+            <input type="number" class="calc-input" id="L3frejaAge" value="35" min="15" max="55" oninput="calcL3()">
+          </div>
+        </div>
+        <div class="compare-grid" id="L3compare"></div>
+        <div class="chart-container">
+          <canvas id="L3chart"></canvas>
+          <div class="chart-legend">
+            <span><span class="dot" style="background:var(--teal)"></span>Oliver</span>
+            <span><span class="dot" style="background:var(--amber)"></span>Freja</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Spørgsmål</h2>
+      <div class="card">
+        <p><strong>a)</strong> Hvem har investeret mest i alt (i kr.)?</p>
+        <p><strong>b)</strong> Hvem har flest penge som 65-årig?</p>
+        <p><strong>c)</strong> Forklar hvorfor den person der investerede mindst, endte med mest.</p>
+        <p><strong>d)</strong> Hvad ville dine 200 kr./md blive til fra du er 18 til du er 65? <em>(Brug beregneren!)</em></p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-outline" onclick="goTo('L2')">← Lektion 2</button>
+        <button class="btn-primary" onclick="goTo('L4')">Lektion 4 →</button>
+      </div>
+    </div>
+
+    <!-- ===== LEKTION 4 ===== -->
+    <div class="page" id="p-L4">
+      <span class="page-tag">Lektion 4 · 45 min</span>
+      <h1>Min opsparingsplan</h1>
+      <p class="page-sub">Eleverne laver deres egen plan og reflekterer over, hvad de har lært.</p>
+
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot current"></div></div>
+
+      <div class="tip-box teacher-only"><strong>Lærerens plan:</strong><br>0–20 min: Eleverne laver deres plan med beregneren.<br>20–35 min: Refleksionstekst (5–10 sætninger).<br>35–45 min: Evalueringsquiz.</div>
+
+      <h2>Lav din opsparingsplan</h2>
+      <p>Vælg et beløb du realistisk kunne sætte til side om måneden, en tidshorisont og en rente. Se hvad det kunne blive til.</p>
+
+      <div class="calc-wrap">
+        <h4>Min plan</h4>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Månedligt beløb (kr.)</label>
+            <input type="number" class="calc-input" id="L4monthly" value="200" min="50" step="50" oninput="calcL4()">
+          </div>
+          <div class="calc-field">
+            <label>Fra alder</label>
+            <input type="number" class="calc-input" id="L4from" value="18" min="15" max="40" oninput="calcL4()">
+          </div>
+          <div class="calc-field">
+            <label>Til alder</label>
+            <input type="number" class="calc-input" id="L4to" value="55" min="25" max="70" oninput="calcL4()">
+          </div>
+          <div class="calc-field">
+            <label>Årlig rente (%)</label>
+            <div class="range-wrap">
+              <span class="range-val" id="L4rateVal">7%</span>
+              <input type="range" min="1" max="15" value="7" id="L4rate" oninput="calcL4()">
+            </div>
+          </div>
+        </div>
+        <div class="calc-result" id="L4result"></div>
+        <div class="chart-container">
+          <canvas id="L4chart"></canvas>
+          <div class="chart-legend">
+            <span><span class="dot" style="background:var(--teal)"></span>Estimeret værdi</span>
+            <span><span class="dot" style="background:var(--gray-l)"></span>Dine indbetalinger</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Refleksion</h2>
+      <div class="card">
+        <p>Skriv 5–10 sætninger om:</p>
+        <p><strong>1.</strong> Hvad har du lært i dette forløb?</p>
+        <p><strong>2.</strong> Hvad overraskede dig mest?</p>
+        <p><strong>3.</strong> Hvordan kan du bruge denne viden i dit eget liv?</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-outline" onclick="goTo('L3')">← Lektion 3</button>
+        <button class="btn-primary" onclick="goTo('quiz')">Tag quizzen →</button>
+      </div>
+    </div>
+
+    <!-- ===== QUIZ ===== -->
+    <div class="page" id="p-quiz">
+      <span class="page-tag">🧠 Evaluering</span>
+      <h1>Evalueringsquiz</h1>
+      <p class="page-sub">10 spørgsmål om renters rente, vækst og opsparing. Test hvad du har lært!</p>
+      <div id="quizContainer"></div>
+      <div id="quizScore" class="quiz-score" style="display:none"></div>
+      <div class="nav-btns">
+        <button class="btn-outline" onclick="goTo('L4')">← Lektion 4</button>
+        <button class="btn-primary" id="quizSubmit" onclick="scoreQuiz()">Se resultat →</button>
+      </div>
+    </div>
+
+    <!-- ===== CALC ===== -->
+    <div class="page" id="p-calc">
+      <span class="page-tag">🔢 Værktøj</span>
+      <h1>Opsparingsberegner</h1>
+      <p class="page-sub">Eksperimenter frit med forskellige beløb, tider og renter.</p>
+
+      <div class="calc-wrap">
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label>Startbeløb (kr.)</label>
+            <input type="number" class="calc-input" id="Cstart" value="0" min="0" step="1000" oninput="calcFree()">
+          </div>
+          <div class="calc-field">
+            <label>Månedligt bidrag (kr.)</label>
+            <input type="number" class="calc-input" id="Cmonthly" value="500" min="0" step="100" oninput="calcFree()">
+          </div>
+          <div class="calc-field">
+            <label>Antal år</label>
+            <div class="range-wrap">
+              <span class="range-val" id="CyearsVal">20</span>
+              <input type="range" min="1" max="50" value="20" id="Cyears" oninput="calcFree()">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label>Årlig rente (%)</label>
+            <div class="range-wrap">
+              <span class="range-val" id="CrateVal">7%</span>
+              <input type="range" min="1" max="15" value="7" id="Crate" oninput="calcFree()">
+            </div>
+          </div>
+        </div>
+        <div class="calc-result" id="Cresult"></div>
+        <div class="chart-container">
+          <canvas id="Cchart"></canvas>
+          <div class="chart-legend">
+            <span><span class="dot" style="background:var(--teal)"></span>Estimeret værdi</span>
+            <span><span class="dot" style="background:var(--gray-l)"></span>Dine indbetalinger</span>
+          </div>
+        </div>
+      </div>
+      <div class="warn-box">Dette er en forenklet illustration til undervisningsbrug. Faktiske investeringsafkast varierer og er ikke garanterede.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== NAV =====
+let currentPage = 'overview';
+let role = 'teacher';
+
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  const items = document.querySelectorAll('.sb-item');
+  const map = { overview: 0, L1: 1, L2: 2, L3: 3, L4: 4, quiz: 5, calc: 6 };
+  if (map[id] !== undefined) items[map[id]].classList.add('active');
+  currentPage = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.innerWidth < 900) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+  // trigger calcs
+  if (id === 'L1') calcL1();
+  if (id === 'L2') calcL2();
+  if (id === 'L3') calcL3();
+  if (id === 'L4') calcL4();
+  if (id === 'calc') calcFree();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+function setRole(r, btn) {
+  role = r;
+  document.querySelectorAll('.sb-role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.teacher-only').forEach(el => {
+    el.style.display = r === 'teacher' ? '' : 'none';
+  });
+}
+
+// ===== CALC HELPERS =====
+function fv(principal, monthly, rate, years) {
+  const mr = rate / 12;
+  const months = years * 12;
+  const fvL = principal * Math.pow(1 + mr, months);
+  const fvA = monthly > 0 ? monthly * ((Math.pow(1 + mr, months) - 1) / mr) : 0;
+  return fvL + fvA;
+}
+
+function fmt(n) { return Math.round(n).toLocaleString('da-DK'); }
+
+function drawChart(canvasId, growthData, contribData, labels) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width, H = 260;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  const mx = Math.max(...growthData) * 1.1 || 1;
+  const pT = 16, pB = 28, pL = 52, pR = 12;
+  const cW = W - pL - pR, cH = H - pT - pB;
+
+  ctx.fillStyle = '#FAFAF5'; ctx.fillRect(0, 0, W, H);
+
+  // grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pT + (cH / 4) * i;
+    ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(pL, y); ctx.lineTo(W - pR, y); ctx.stroke();
+    const v = mx - (mx / 4) * i;
+    ctx.fillStyle = '#9CA3AF'; ctx.font = '10px Work Sans,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? Math.round(v/1000)+'k' : Math.round(v), pL - 6, y + 3);
+  }
+
+  // x labels
+  ctx.textAlign = 'center';
+  const step = labels.length <= 12 ? 1 : labels.length <= 25 ? 5 : 10;
+  for (let i = 0; i < labels.length; i += step) {
+    const x = pL + (i / (labels.length - 1)) * cW;
+    ctx.fillText(labels[i], x, H - 6);
+  }
+
+  // contrib area
+  ctx.beginPath(); ctx.moveTo(pL, pT + cH);
+  for (let i = 0; i < contribData.length; i++) {
+    ctx.lineTo(pL + (i / (contribData.length - 1)) * cW, pT + cH - (contribData[i] / mx) * cH);
+  }
+  ctx.lineTo(pL + cW, pT + cH); ctx.closePath();
+  ctx.fillStyle = 'rgba(156,163,175,.1)'; ctx.fill();
+
+  // growth area
+  ctx.beginPath(); ctx.moveTo(pL, pT + cH);
+  for (let i = 0; i < growthData.length; i++) {
+    ctx.lineTo(pL + (i / (growthData.length - 1)) * cW, pT + cH - (growthData[i] / mx) * cH);
+  }
+  ctx.lineTo(pL + cW, pT + cH); ctx.closePath();
+  const grad = ctx.createLinearGradient(0, pT, 0, pT + cH);
+  grad.addColorStop(0, 'rgba(27,122,110,.15)'); grad.addColorStop(1, 'rgba(27,122,110,.02)');
+  ctx.fillStyle = grad; ctx.fill();
+
+  // contrib line
+  ctx.beginPath();
+  for (let i = 0; i < contribData.length; i++) {
+    const x = pL + (i / (contribData.length - 1)) * cW, y = pT + cH - (contribData[i] / mx) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = '#9CA3AF'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
+
+  // growth line
+  ctx.beginPath();
+  for (let i = 0; i < growthData.length; i++) {
+    const x = pL + (i / (growthData.length - 1)) * cW, y = pT + cH - (growthData[i] / mx) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = '#1B7A6E'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // end dot
+  const lx = pL + cW, ly = pT + cH - (growthData[growthData.length - 1] / mx) * cH;
+  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2); ctx.fillStyle = '#1B7A6E'; ctx.fill();
+  ctx.beginPath(); ctx.arc(lx, ly, 2.5, 0, Math.PI * 2); ctx.fillStyle = '#FFF'; ctx.fill();
+}
+
+function drawCompareChart(canvasId, d1, d2, labels) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width, H = 260;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  const mx = Math.max(...d1, ...d2) * 1.1 || 1;
+  const pT = 16, pB = 28, pL = 52, pR = 12;
+  const cW = W - pL - pR, cH = H - pT - pB;
+
+  ctx.fillStyle = '#FAFAF5'; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i <= 4; i++) {
+    const y = pT + (cH / 4) * i;
+    ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(pL, y); ctx.lineTo(W - pR, y); ctx.stroke();
+    const v = mx - (mx / 4) * i;
+    ctx.fillStyle = '#9CA3AF'; ctx.font = '10px Work Sans,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(v >= 1000000 ? (v/1000000).toFixed(1)+'M' : Math.round(v/1000)+'k', pL - 6, y + 3);
+  }
+  ctx.textAlign = 'center';
+  const step = labels.length <= 12 ? 2 : 5;
+  for (let i = 0; i < labels.length; i += step) {
+    ctx.fillText(labels[i], pL + (i / (labels.length - 1)) * cW, H - 6);
+  }
+
+  // Line 1
+  ctx.beginPath();
+  for (let i = 0; i < d1.length; i++) {
+    const x = pL + (i / (d1.length - 1)) * cW, y = pT + cH - (d1[i] / mx) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = '#1B7A6E'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Line 2
+  ctx.beginPath();
+  for (let i = 0; i < d2.length; i++) {
+    const x = pL + (i / (d2.length - 1)) * cW, y = pT + cH - (d2[i] / mx) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = '#D4882A'; ctx.lineWidth = 2.5; ctx.stroke();
+}
+
+// ===== L1 CALC =====
+function calcL1() {
+  const start = parseFloat(document.getElementById('L1start').value) || 1000;
+  const rate = parseInt(document.getElementById('L1rate').value) || 5;
+  document.getElementById('L1rateVal').textContent = rate + '%';
+
+  const years = [1,2,3,4,5,6,7,8,9,10];
+  let html = '<tr><th>År</th><th>Beløb ved start</th><th>Rente</th><th>Beløb ved slut</th></tr>';
+  const gd = [start], cd = [start], labels = ['0'];
+  for (const y of years) {
+    const s = start * Math.pow(1 + rate/100, y - 1);
+    const r = s * rate / 100;
+    const e = s + r;
+    html += `<tr><td>${y}</td><td>${fmt(s)} kr.</td><td>${fmt(r)} kr.</td><td>${fmt(e)} kr.</td></tr>`;
+    gd.push(e); cd.push(start); labels.push('År ' + y);
+  }
+  document.getElementById('L1table').innerHTML = html;
+  drawChart('L1chart', gd, cd, labels);
+}
+
+// ===== L2 CALC =====
+function calcL2() {
+  const monthly = parseFloat(document.getElementById('L2monthly').value) || 100;
+  const rate = parseInt(document.getElementById('L2rate').value) || 7;
+  document.getElementById('L2rateVal').textContent = rate + '%';
+
+  const yrs = [5,10,15,20,25,30];
+  let html = '<tr><th>År</th><th>Person A (madras)</th><th>Person B (investering)</th><th>Forskel</th></tr>';
+  for (const y of yrs) {
+    const a = monthly * 12 * y;
+    const b = fv(0, monthly, rate/100, y);
+    html += `<tr><td>${y}</td><td>${fmt(a)} kr.</td><td>${fmt(b)} kr.</td><td>${fmt(b - a)} kr.</td></tr>`;
+  }
+  document.getElementById('L2table').innerHTML = html;
+
+  const gd = [], cd = [], labels = [];
+  for (let y = 0; y <= 30; y++) {
+    gd.push(fv(0, monthly, rate/100, y));
+    cd.push(monthly * 12 * y);
+    labels.push(y);
+  }
+  drawCompareChart('L2chart', gd, cd, labels.map(l => 'År ' + l));
+}
+
+// ===== L3 CALC =====
+function calcL3() {
+  const oM = parseFloat(document.getElementById('L3oliver').value) || 500;
+  const oA = parseInt(document.getElementById('L3oliverAge').value) || 18;
+  const fM = parseFloat(document.getElementById('L3freja').value) || 1000;
+  const fA = parseInt(document.getElementById('L3frejaAge').value) || 35;
+  const endAge = 65, rate = 0.07;
+
+  const oYrs = endAge - oA, fYrs = endAge - fA;
+  const oVal = fv(0, oM, rate, Math.max(0, oYrs));
+  const fVal = fv(0, fM, rate, Math.max(0, fYrs));
+  const oIn = oM * 12 * oYrs, fIn = fM * 12 * fYrs;
+  const oWins = oVal >= fVal;
+
+  document.getElementById('L3compare').innerHTML = `
+    <div class="compare-card ${oWins ? 'winner' : ''}">
+      <div class="compare-avatar" style="background:var(--teal-p)">👦</div>
+      <div class="compare-name">Oliver</div>
+      <div class="compare-detail">${fmt(oM)} kr./md fra ${oA} år · ${oYrs} år</div>
+      <div class="compare-value">${fmt(oVal)} kr.</div>
+      <div class="compare-sub">Investeret: ${fmt(oIn)} kr. · Vækst: ${fmt(oVal - oIn)} kr.</div>
+      ${oWins ? '<div style="margin-top:8px;font-size:.78rem;font-weight:700;color:var(--teal)">🏆 VINDER</div>' : ''}
+    </div>
+    <div class="compare-card ${!oWins ? 'winner' : ''}">
+      <div class="compare-avatar" style="background:var(--amber-p)">👩</div>
+      <div class="compare-name">Freja</div>
+      <div class="compare-detail">${fmt(fM)} kr./md fra ${fA} år · ${fYrs} år</div>
+      <div class="compare-value">${fmt(fVal)} kr.</div>
+      <div class="compare-sub">Investeret: ${fmt(fIn)} kr. · Vækst: ${fmt(fVal - fIn)} kr.</div>
+      ${!oWins ? '<div style="margin-top:8px;font-size:.78rem;font-weight:700;color:var(--teal)">🏆 VINDER</div>' : ''}
+    </div>`;
+
+  const maxYrs = Math.max(oYrs, fYrs);
+  const od = [], fd = [], labels = [];
+  for (let y = 0; y <= maxYrs; y++) {
+    od.push(y <= oYrs ? fv(0, oM, rate, y) : fv(0, oM, rate, oYrs));
+    fd.push(y <= fYrs ? 0 : fv(0, fM, rate, y - (maxYrs - fYrs)));
+    labels.push('År ' + y);
+  }
+  // Recalc Freja relative to when she starts
+  const fd2 = [];
+  for (let y = 0; y <= maxYrs; y++) {
+    const frejaActive = y >= (oYrs - fYrs);
+    fd2.push(frejaActive ? fv(0, fM, rate, y - (oYrs - fYrs)) : 0);
+  }
+  drawCompareChart('L3chart', od, fd2, labels);
+}
+
+// ===== L4 CALC =====
+function calcL4() {
+  const monthly = parseFloat(document.getElementById('L4monthly').value) || 200;
+  const from = parseInt(document.getElementById('L4from').value) || 18;
+  const to = parseInt(document.getElementById('L4to').value) || 55;
+  const rate = parseInt(document.getElementById('L4rate').value) || 7;
+  document.getElementById('L4rateVal').textContent = rate + '%';
+  const years = Math.max(1, to - from);
+
+  const total = fv(0, monthly, rate/100, years);
+  const invested = monthly * 12 * years;
+  const growth = total - invested;
+
+  document.getElementById('L4result').innerHTML = `
+    <div class="calc-result-item"><div class="calc-result-num">${fmt(total)} kr.</div><div class="calc-result-label">Estimeret værdi</div></div>
+    <div class="calc-result-item"><div class="calc-result-num">${fmt(invested)} kr.</div><div class="calc-result-label">Du indbetaler</div></div>
+    <div class="calc-result-item"><div class="calc-result-num" style="color:var(--amber-d)">+${fmt(growth)} kr.</div><div class="calc-result-label">Vækst (renters rente)</div></div>
+    <div class="calc-result-item"><div class="calc-result-num">${Math.round((total/invested - 1)*100)}%</div><div class="calc-result-label">Samlet vækst</div></div>`;
+
+  const gd = [], cd = [], labels = [];
+  for (let y = 0; y <= years; y++) {
+    gd.push(fv(0, monthly, rate/100, y));
+    cd.push(monthly * 12 * y);
+    labels.push(from + y);
+  }
+  drawChart('L4chart', gd, cd, labels.map(l => l + ' år'));
+}
+
+// ===== FREE CALC =====
+function calcFree() {
+  const start = parseFloat(document.getElementById('Cstart').value) || 0;
+  const monthly = parseFloat(document.getElementById('Cmonthly').value) || 500;
+  const years = parseInt(document.getElementById('Cyears').value) || 20;
+  const rate = parseInt(document.getElementById('Crate').value) || 7;
+  document.getElementById('CyearsVal').textContent = years;
+  document.getElementById('CrateVal').textContent = rate + '%';
+
+  const total = fv(start, monthly, rate/100, years);
+  const invested = start + monthly * 12 * years;
+  const growth = total - invested;
+
+  document.getElementById('Cresult').innerHTML = `
+    <div class="calc-result-item"><div class="calc-result-num">${fmt(total)} kr.</div><div class="calc-result-label">Estimeret værdi</div></div>
+    <div class="calc-result-item"><div class="calc-result-num">${fmt(invested)} kr.</div><div class="calc-result-label">Du indbetaler</div></div>
+    <div class="calc-result-item"><div class="calc-result-num" style="color:var(--amber-d)">+${fmt(growth)} kr.</div><div class="calc-result-label">Vækst</div></div>
+    <div class="calc-result-item"><div class="calc-result-num">${invested > 0 ? Math.round((total/invested - 1)*100) : 0}%</div><div class="calc-result-label">Samlet vækst</div></div>`;
+
+  const gd = [], cd = [], labels = [];
+  for (let y = 0; y <= years; y++) {
+    gd.push(fv(start, monthly, rate/100, y));
+    cd.push(start + monthly * 12 * y);
+    labels.push('År ' + y);
+  }
+  drawChart('Cchart', gd, cd, labels);
+}
+
+// ===== QUIZ =====
+const quizData = [
+  { q: "Hvad er rente?", opts: ["En skat du betaler til staten","Penge banken betaler dig for at låne dine penge","En forsikring mod tab","En type aktie"], ans: 1, fb: "Banken betaler dig rente, fordi de låner dine penge og investerer dem." },
+  { q: "Hvad betyder \"renters rente\"?", opts: ["At renten stiger hvert år","At du får rente af din rente","At banken tager dobbelt gebyr","At du betaler rente to gange"], ans: 1, fb: "Renters rente betyder, at dit afkast selv begynder at give afkast — sneboldseffekten." },
+  { q: "10.000 kr. til 5% rente. Hvad har du efter 1 år?", opts: ["10.050 kr.","10.500 kr.","15.000 kr.","10.005 kr."], ans: 1, fb: "10.000 × 1,05 = 10.500 kr." },
+  { q: "Hvad er forskellen på lineær og eksponentiel vækst?", opts: ["Lineær er hurtigere","Eksponentiel stiger med samme beløb hvert år","Eksponentiel accelererer over tid","Der er ingen forskel"], ans: 2, fb: "Eksponentiel vækst accelererer, fordi væksten beregnes på et stadig større beløb." },
+  { q: "200 kr./md under madrassen i 20 år. Hvor meget?", opts: ["24.000 kr.","48.000 kr.","96.000 kr.","12.000 kr."], ans: 1, fb: "200 × 12 × 20 = 48.000 kr. Lineær vækst — ingen rente." },
+  { q: "Hvad sker der med 100.000 kr. uden rente efter 10 år med 2,5% inflation?", opts: ["Stadig 100.000 kr. værd","Kan købe for ca. 78.000 kr.","Vokser til 125.000 kr.","Ingenting"], ans: 1, fb: "Inflationen æder købekraften. Efter 10 år med 2,5% kan du kun købe for ca. 78.000 kr." },
+  { q: "Oliver (500 kr./md fra 18 år) vs. Freja (1.000 kr./md fra 35 år) ved 7%. Hvem vinder som 65-årig?", opts: ["Freja — hun investerer dobbelt så meget","Oliver — han startede 17 år tidligere","De har ca. det samme","Det kan man ikke vide"], ans: 1, fb: "Oliver: ca. 1.714.000 kr. Freja: ca. 1.220.000 kr. Tid slår beløb." },
+  { q: "Hvad er den vigtigste faktor i langsigtet opsparing?", opts: ["At vælge de rigtige aktier","At investere et stort beløb","At starte tidligt og give det tid","At følge markedet dagligt"], ans: 2, fb: "Tid + konsekvens + renters rente slår alt andet." },
+  { q: "Hvad er sneboldeffekten i forbindelse med penge?", opts: ["At penge smuldrer over tid","At afkast genererer nyt afkast","At alt bliver dyrere om vinteren","At banken ruller pengene sammen"], ans: 1, fb: "Afkast der genererer nyt afkast — præcis som en snebold der vokser for hvert rul." },
+  { q: "Hvad sker med renters rente-kurven jo længere tid der går?", opts: ["Den flader ud","Den stiger stejlere og stejlere","Den er helt lige","Den falder"], ans: 1, fb: "Eksponentiel vækst: kurven bliver stejlere og stejlere over tid." },
+];
+
+let quizAnswers = new Array(quizData.length).fill(-1);
+
+function buildQuiz() {
+  const c = document.getElementById('quizContainer');
+  c.innerHTML = quizData.map((q, qi) => {
+    const letters = ['A','B','C','D'];
+    return `<div class="quiz-q" id="qq${qi}">
+      <div class="quiz-q-text"><span class="quiz-q-num">${qi+1}</span>${q.q}</div>
+      <div class="quiz-opts">${q.opts.map((o, oi) =>
+        `<button class="quiz-opt" data-qi="${qi}" data-oi="${oi}" onclick="pickQuiz(${qi},${oi})"><span class="opt-letter">${letters[oi]}</span>${o}</button>`
+      ).join('')}</div>
+      <div class="quiz-fb" id="qfb${qi}"></div>
+    </div>`;
+  }).join('');
+}
+
+function pickQuiz(qi, oi) {
+  const q = quizData[qi];
+  const opts = document.querySelectorAll(`#qq${qi} .quiz-opt`);
+  if (quizAnswers[qi] !== -1) return;
+  quizAnswers[qi] = oi;
+  opts.forEach(o => o.classList.add('dis'));
+  opts[q.ans].classList.add('correct');
+  if (oi !== q.ans) opts[oi].classList.add('wrong');
+  const fb = document.getElementById('qfb' + qi);
+  fb.className = 'quiz-fb show ' + (oi === q.ans ? 'ok' : 'no');
+  fb.innerHTML = (oi === q.ans ? '✅ ' : '❌ ') + q.fb;
+}
+
+function scoreQuiz() {
+  const answered = quizAnswers.filter(a => a !== -1).length;
+  if (answered < quizData.length) { alert('Besvar alle 10 spørgsmål først!'); return; }
+  const correct = quizAnswers.filter((a, i) => a === quizData[i].ans).length;
+  const sc = document.getElementById('quizScore');
+  sc.style.display = 'block';
+  sc.innerHTML = `<div class="quiz-score-num">${correct}/10</div><div class="quiz-score-label">${correct >= 8 ? '🏆 Fantastisk! Du har forstået renters rente!' : correct >= 5 ? '👍 Godt klaret! Genbesøg de emner du er usikker på.' : '📖 Øv dig lidt mere — prøv at genlæse lektionerne.'}</div>`;
+  sc.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== INIT =====
+buildQuiz();
+calcL1();
+</script>
+</body>
+</html>

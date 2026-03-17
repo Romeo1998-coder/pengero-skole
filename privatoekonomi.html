@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PengeRo Skole — Privatøkonomi & Investering</title>
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FAFAF5;--bg2:#F2F0E8;--white:#FFF;--teal:#1B7A6E;--teal-l:#2A9A8C;--teal-p:#E0F2EE;--teal-d:#0F4A42;
+--amber:#D4882A;--amber-l:#F0C97A;--amber-p:#FFF5E0;--amber-d:#8A5518;
+--coral:#D85A42;--coral-p:#FDEAE6;--coral-d:#8B2E1E;
+--ink:#1A1D20;--ink2:#3A3F45;--gray:#6B7280;--gray-l:#9CA3AF;--gray-p:#E5E7EB;--gray-pp:#F3F4F6;
+--green:#16A34A;--green-p:#DCFCE7;--red:#DC2626;--red-p:#FEE2E2;
+--purple:#7C3AED;--purple-p:#EDE9FE;
+--serif:'Vollkorn',Georgia,serif;--sans:'Work Sans',-apple-system,sans-serif;
+--radius:12px;--radius-s:8px;--shadow:0 1px 4px rgba(0,0,0,.04);--shadow-m:0 4px 20px rgba(0,0,0,.06);--ease:.3s cubic-bezier(.25,.46,.45,.94);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;font-size:15px}
+button{font-family:var(--sans);cursor:pointer;border:none}
+
+.app{display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--teal-d);color:white;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.main{margin-left:280px;flex:1}
+.content{max-width:840px;margin:0 auto;padding:40px 32px 80px}
+
+.sb-header{padding:24px 20px 16px}
+.sb-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700}
+.sb-logo em{color:var(--amber-l);font-style:italic}
+.sb-sub{font-size:.7rem;color:rgba(255,255,255,.45);margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+.sb-nav{flex:1;padding:8px 10px}
+.sb-section{font-size:.62rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);padding:16px 12px 6px;font-weight:700}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-s);font-size:.85rem;font-weight:500;color:rgba(255,255,255,.65);transition:all var(--ease);margin-bottom:2px;cursor:pointer}
+.sb-item:hover{background:rgba(255,255,255,.08);color:white}
+.sb-item.active{background:rgba(255,255,255,.12);color:white;font-weight:600}
+.sb-emoji{font-size:1rem;width:22px;text-align:center}
+.sb-badge{margin-left:auto;background:rgba(255,255,255,.12);padding:2px 8px;border-radius:50px;font-size:.65rem;font-weight:700}
+.sb-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:.68rem;color:rgba(255,255,255,.25)}
+
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;z-index:200;background:var(--teal-d);padding:12px 16px;align-items:center;justify-content:space-between}
+.mobile-header .sb-logo{font-size:1.1rem}
+.burger{background:none;color:white;font-size:1.4rem;border:none}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+
+.page{display:none}.page.active{display:block;animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--teal-p);color:var(--teal);padding:4px 12px;border-radius:50px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.page h1{font-family:var(--serif);font-size:2rem;font-weight:700;line-height:1.2;margin-bottom:8px}
+.page h2{font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--teal-d);margin:28px 0 10px}
+.page h3{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--amber-d);margin:20px 0 8px}
+.page-sub{font-size:1rem;color:var(--gray);margin-bottom:24px;line-height:1.7}
+p{margin-bottom:10px}
+
+.info-box{background:var(--teal-p);border-left:4px solid var(--teal);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:14px 18px;margin:14px 0;font-size:.9rem;line-height:1.65}
+.info-box strong{color:var(--teal-d)}
+.tip-box{background:var(--amber-p);border-left:4px solid var(--amber);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:14px 18px;margin:14px 0;font-size:.9rem}
+.tip-box strong{color:var(--amber-d)}
+.warn-box{background:var(--coral-p);border-left:4px solid var(--coral);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:14px 18px;margin:14px 0;font-size:.88rem}
+
+.card{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:22px;margin:14px 0;box-shadow:var(--shadow)}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.stat-card{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-num{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--teal);line-height:1.1}
+.stat-label{font-size:.72rem;color:var(--gray);margin-top:3px}
+
+.calc-wrap{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:24px;margin:18px 0;box-shadow:var(--shadow-m)}
+.calc-wrap h4{font-family:var(--serif);font-size:1.05rem;font-weight:700;margin-bottom:14px}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.calc-field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink2);margin-bottom:3px}
+.calc-input{width:100%;padding:10px 12px;border:1.5px solid var(--gray-p);border-radius:var(--radius-s);font-family:var(--sans);font-size:.92rem;color:var(--ink);transition:border-color var(--ease)}
+.calc-input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(27,122,110,.1)}
+.range-wrap{position:relative}
+.range-wrap input[type=range]{width:100%;margin:6px 0;accent-color:var(--teal)}
+.range-val{position:absolute;right:0;top:-2px;font-size:.85rem;font-weight:700;color:var(--teal)}
+
+.result-box{background:var(--teal-p);border-radius:var(--radius);padding:18px;margin:14px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.result-item{text-align:center}
+.result-num{font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--teal-d)}
+.result-label{font-size:.7rem;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+.chart-box{margin:14px 0;background:var(--white);border-radius:var(--radius-s);border:1px solid var(--gray-p);overflow:hidden}
+.chart-box canvas{width:100%;height:240px;display:block}
+.chart-legend{display:flex;gap:16px;padding:8px 14px;font-size:.76rem;color:var(--gray);border-top:1px solid var(--gray-p);flex-wrap:wrap}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* BUDGET BUILDER */
+.budget-cats{display:grid;grid-template-columns:1fr;gap:8px;margin:14px 0}
+.budget-row{display:grid;grid-template-columns:36px 1fr 120px 80px;gap:10px;align-items:center;padding:10px 14px;background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius-s);transition:all var(--ease)}
+.budget-row:hover{border-color:var(--teal);box-shadow:var(--shadow)}
+.budget-emoji{font-size:1.2rem;text-align:center}
+.budget-name{font-weight:600;font-size:.9rem}
+.budget-name small{font-weight:400;color:var(--gray-l);font-size:.78rem;display:block}
+.budget-input{width:100%;padding:8px 10px;border:1.5px solid var(--gray-p);border-radius:6px;font-family:var(--sans);font-size:.88rem;text-align:right;transition:border-color var(--ease)}
+.budget-input:focus{outline:none;border-color:var(--teal)}
+.budget-pct{font-size:.78rem;font-weight:600;color:var(--gray-l);text-align:right}
+.budget-balance{padding:16px;border-radius:var(--radius);margin:14px 0;text-align:center;font-size:1rem;font-weight:700;transition:all var(--ease)}
+.budget-balance.positive{background:var(--green-p);color:#15803D}
+.budget-balance.negative{background:var(--red-p);color:#991B1B}
+.budget-balance.zero{background:var(--gray-pp);color:var(--gray)}
+.budget-balance .big{font-family:var(--serif);font-size:2rem;display:block;margin-bottom:2px}
+
+/* PIE CHART */
+.pie-container{display:flex;gap:20px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.pie-container canvas{width:220px;height:220px;flex-shrink:0}
+.pie-legend{flex:1;min-width:200px}
+.pie-legend-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem}
+.pie-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.pie-val{margin-left:auto;font-weight:600;font-size:.82rem}
+
+/* INVEST EXPLAINER */
+.invest-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0}
+.invest-card{background:var(--white);border:2px solid var(--gray-p);border-radius:var(--radius);padding:20px;text-align:center;transition:all var(--ease)}
+.invest-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-m)}
+.invest-card .ic-emoji{font-size:2rem;margin-bottom:8px}
+.invest-card h4{font-family:var(--serif);font-size:1rem;margin-bottom:4px}
+.invest-card p{font-size:.82rem;color:var(--gray);line-height:1.5}
+.invest-card .ic-return{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-top:8px}
+
+/* SIMULATION */
+.sim-year{background:var(--white);border:1px solid var(--gray-p);border-radius:var(--radius);padding:18px;margin:10px 0;transition:all var(--ease)}
+.sim-year.active-year{border-color:var(--teal);box-shadow:0 0 0 2px rgba(27,122,110,.15)}
+.sim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sim-year-label{font-family:var(--serif);font-size:1.1rem;font-weight:700}
+.sim-balance{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--teal)}
+.sim-event{background:var(--amber-p);border-radius:var(--radius-s);padding:10px 14px;margin-bottom:10px;font-size:.88rem}
+.sim-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sim-choice{padding:12px;border:1.5px solid var(--gray-p);border-radius:var(--radius-s);background:var(--white);font-size:.86rem;text-align:left;transition:all var(--ease)}
+.sim-choice:hover{border-color:var(--teal);background:var(--teal-p)}
+.sim-choice.picked{border-color:var(--teal);background:var(--teal-p);font-weight:600}
+.sim-choice .choice-label{font-weight:700;display:block;margin-bottom:2px}
+.sim-choice .choice-desc{font-size:.78rem;color:var(--gray)}
+
+.btn-primary{background:var(--teal);color:white;padding:12px 28px;border-radius:50px;font-size:.92rem;font-weight:700;transition:all var(--ease);display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--teal-l);transform:translateY(-1px)}
+.btn-outline{background:none;border:1.5px solid var(--gray-p);color:var(--ink);padding:10px 22px;border-radius:50px;font-size:.88rem;font-weight:600;transition:all var(--ease)}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.nav-btns{display:flex;justify-content:space-between;margin-top:36px;padding-top:18px;border-top:1px solid var(--gray-p)}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.86rem}
+th{background:var(--teal-d);color:white;padding:9px 12px;text-align:left;font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:9px 12px;border-bottom:1px solid var(--gray-p)}
+tr:nth-child(even) td{background:var(--gray-pp)}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0)}
+  .sb-overlay.open{display:block}
+  .main{margin-left:0}
+  .mobile-header{display:flex}
+  .content{padding:72px 16px 60px}
+  .calc-grid,.invest-cards,.sim-choices{grid-template-columns:1fr}
+  .budget-row{grid-template-columns:32px 1fr 100px 60px}
+  .pie-container{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-header">
+  <div class="sb-logo">Penge<em>Ro</em> Skole</div>
+  <button class="burger" onclick="toggleSB()">☰</button>
+</div>
+<div class="sb-overlay" id="sbOv" onclick="toggleSB()"></div>
+
+<div class="sidebar" id="sb">
+  <div class="sb-header">
+    <div class="sb-logo">Penge<em>Ro</em> Skole</div>
+    <div class="sb-sub">Privatøkonomi & Investering</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Forløb</div>
+    <div class="sb-item active" onclick="go('budget')"><span class="sb-emoji">💰</span>Hvad koster det at leve?<span class="sb-badge">Nyt</span></div>
+    <div class="sb-item" onclick="go('inflation')"><span class="sb-emoji">📉</span>Inflation<span class="sb-badge">Nyt</span></div>
+    <div class="sb-item" onclick="go('invest')"><span class="sb-emoji">📊</span>Hvad er investering?<span class="sb-badge">Nyt</span></div>
+    <div class="sb-section">Også tilgængelig</div>
+    <div class="sb-item" style="opacity:.5">
+      <span class="sb-emoji">📈</span>Renters rente
+      <span class="sb-badge" style="background:rgba(255,255,255,.06)">Se anden app</span>
+    </div>
+  </div>
+  <div class="sb-footer">PengeRo Skole · pengero.dk<br>Uddannelsesmateriale — ikke rådgivning</div>
+</div>
+
+<div class="main"><div class="content">
+
+<!-- ===== MODULE 1: BUDGET ===== -->
+<div class="page active" id="p-budget">
+  <span class="page-tag">💰 Forløb 1</span>
+  <h1>Hvad koster det at leve?</h1>
+  <p class="page-sub">Byg et realistisk budget for en voksen der bor alene. Find ud af, hvad der faktisk koster — og om det hænger sammen.</p>
+
+  <div class="info-box"><strong>I denne øvelse</strong> er du 25 år, bor alene i en lejlighed, og har en månedsløn efter skat på 22.000 kr. Dit job er at få din økonomi til at hænge sammen.</div>
+
+  <h2>Din månedsindkomst</h2>
+  <div class="calc-wrap">
+    <div class="calc-field" style="max-width:300px">
+      <label>Løn efter skat (kr./md)</label>
+      <input type="number" class="calc-input" id="budgetIncome" value="22000" min="10000" step="500" oninput="calcBudget()">
+    </div>
+  </div>
+
+  <h2>Dine udgifter</h2>
+  <p>Indtast et realistisk beløb for hver kategori. Hvad tror du, det koster?</p>
+  <div class="budget-cats" id="budgetCats"></div>
+
+  <div class="budget-balance" id="budgetBalance"></div>
+
+  <h2>Dit budget som cirkeldiagram</h2>
+  <div class="pie-container">
+    <canvas id="pieChart" width="220" height="220"></canvas>
+    <div class="pie-legend" id="pieLegend"></div>
+  </div>
+
+  <h2>Spørgsmål</h2>
+  <div class="card">
+    <p><strong>a)</strong> Hvad er din største udgift? Overrasker det dig?</p>
+    <p><strong>b)</strong> Hvor mange procent af din løn går til bolig?</p>
+    <p><strong>c)</strong> Hvad kan du skære i, hvis du vil spare 2.000 kr. mere om måneden?</p>
+    <p><strong>d)</strong> Hvad sker der, hvis din husleje stiger med 1.000 kr.? Prøv det!</p>
+  </div>
+
+  <div class="tip-box"><strong>Diskussion:</strong> Sammenlign jeres budgetter i klassen. Hvem har den laveste husleje? Hvem bruger mest på mad? Hvad prioriterer I forskelligt — og hvorfor?</div>
+
+  <div class="nav-btns">
+    <div></div>
+    <button class="btn-primary" onclick="go('inflation')">Næste: Inflation →</button>
+  </div>
+</div>
+
+<!-- ===== MODULE 2: INFLATION ===== -->
+<div class="page" id="p-inflation">
+  <span class="page-tag">📉 Forløb 2</span>
+  <h1>Inflation — den usynlige skat</h1>
+  <p class="page-sub">Priser stiger hvert år. Men hvad betyder det egentlig for dine penge?</p>
+
+  <div class="info-box"><strong>Inflation</strong> er den generelle stigning i priser over tid. 2\u20133% inflation lyder af ingenting — men over 10, 20 eller 30 år er effekten enorm. Det er grunden til, at penge der bare ligger i banken, langsomt mister værdi.</div>
+
+  <h2>Hvad kostede tingene dengang?</h2>
+  <p>Se, hvordan priser på hverdagsting er steget over tid:</p>
+  <div id="priceTable"></div>
+
+  <h2>Inflationsberegner</h2>
+  <p>Hvad sker der med dine penge, hvis de bare står i banken?</p>
+
+  <div class="calc-wrap">
+    <h4>Hvad er dine penge værd om X år?</h4>
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label>Beløb i dag (kr.)</label>
+        <input type="number" class="calc-input" id="inflAmt" value="100000" min="1000" step="1000" oninput="calcInflation()">
+      </div>
+      <div class="calc-field">
+        <label>Årlig inflation (%)</label>
+        <div class="range-wrap">
+          <span class="range-val" id="inflRateVal">2.5%</span>
+          <input type="range" min="1" max="8" value="2.5" step="0.5" id="inflRate" oninput="calcInflation()">
+        </div>
+      </div>
+    </div>
+    <div class="result-box" id="inflResult"></div>
+    <div class="chart-box">
+      <canvas id="inflChart"></canvas>
+      <div class="chart-legend">
+        <span><span class="dot" style="background:var(--coral)"></span>Reel købekraft</span>
+        <span><span class="dot" style="background:var(--gray-l);opacity:.4"></span>Nominel værdi (uændret)</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>Spørgsmål</h2>
+  <div class="card">
+    <p><strong>a)</strong> Hvad er 100.000 kr. værd efter 20 år med 2,5% inflation?</p>
+    <p><strong>b)</strong> Hvad sker der, hvis inflationen stiger til 5%? Prøv det.</p>
+    <p><strong>c)</strong> Hvorfor er inflation et problem for penge der bare står i banken?</p>
+    <p><strong>d)</strong> Hvad kan man gøre for at beskytte sine penge mod inflation?</p>
+  </div>
+
+  <div class="tip-box"><strong>Vigtig pointe:</strong> Inflation er grunden til, at opsparing alene ikke er nok. Hvis dine penge vokser med 1% i banken, men inflationen er 2,5%, taber du reelt 1,5% om året. Det er derfor mange vælger at investere — for at holde trit med eller overhale inflationen.</div>
+
+  <div class="nav-btns">
+    <button class="btn-outline" onclick="go('budget')">← Budget</button>
+    <button class="btn-primary" onclick="go('invest')">Næste: Investering →</button>
+  </div>
+</div>
+
+<!-- ===== MODULE 3: HVAD ER INVESTERING ===== -->
+<div class="page" id="p-invest">
+  <span class="page-tag">📊 Forløb 3</span>
+  <h1>Hvad er investering — og hvad er det ikke?</h1>
+  <p class="page-sub">Forskellen mellem opsparing, investering og spekulation. Og hvad det hele har med risiko at gøre.</p>
+
+  <h2>Tre måder at bruge penge på</h2>
+  <div class="invest-cards">
+    <div class="invest-card" style="border-color:var(--teal-p)">
+      <div class="ic-emoji">🏦</div>
+      <h4>Opsparing</h4>
+      <p>Du lægger penge til side et sikkert sted (bankkonto). Meget lav risiko, men pengene vokser næsten ikke.</p>
+      <div class="ic-return" style="color:var(--teal)">~1% afkast</div>
+      <p style="font-size:.72rem;color:var(--gray);margin-top:4px">Taber til inflation</p>
+    </div>
+    <div class="invest-card" style="border-color:var(--amber-p)">
+      <div class="ic-emoji">📈</div>
+      <h4>Investering</h4>
+      <p>Du køber fx en fond der ejer dele af mange virksomheder. Moderat risiko, men pengene kan vokse over tid.</p>
+      <div class="ic-return" style="color:var(--amber)">~7% afkast</div>
+      <p style="font-size:.72rem;color:var(--gray);margin-top:4px">Historisk gennemsnit</p>
+    </div>
+    <div class="invest-card" style="border-color:var(--coral-p)">
+      <div class="ic-emoji">🎰</div>
+      <h4>Spekulation</h4>
+      <p>Du satser på at en enkelt aktie eller krypto stiger hurtigt. Høj risiko — du kan tabe det hele.</p>
+      <div class="ic-return" style="color:var(--coral)">??? afkast</div>
+      <p style="font-size:.72rem;color:var(--gray);margin-top:4px">Uforudsigeligt</p>
+    </div>
+  </div>
+
+  <div class="info-box"><strong>Den vigtige forskel:</strong> Investering er IKKE gambling. Når du investerer i en bred fond, ejer du små bidder af hundredvis af virksomheder. Nogle går op, nogle går ned — men historisk har markedet som helhed altid steget over tid. Spekulation er at satse på én ting og håbe det bedste.</div>
+
+  <h2>Hvad er en fond?</h2>
+  <div class="card">
+    <p>Forestil dig en kurv med æbler. Hvert æble er en virksomhed. Hvis ét æble er råddent, er det ærgerligt — men du har stadig 499 gode æbler. Det er en fond: du ejer lidt af mange virksomheder, så én dårlig investering ikke ødelægger det hele.</p>
+    <p>En <strong>indeksfond</strong> er den enkleste type. Den køber automatisk alle virksomheder i et indeks (fx de 500 største i verden) og kræver ingen beslutninger fra dig.</p>
+  </div>
+
+  <h2>Risiko vs. belønning</h2>
+  <p>Prøv at justere risikoen og se, hvad der sker med 10.000 kr. over 10 år:</p>
+
+  <div class="calc-wrap">
+    <h4>Risiko-simulator</h4>
+    <div class="calc-field" style="max-width:400px">
+      <label>Vælg risikoniveau</label>
+      <div class="range-wrap">
+        <span class="range-val" id="riskLabel">Balanceret (7%)</span>
+        <input type="range" min="0" max="4" value="2" id="riskSlider" oninput="calcRisk()">
+      </div>
+    </div>
+    <div class="result-box" id="riskResult"></div>
+    <div id="riskExplainer"></div>
+  </div>
+
+  <h2>10-års investerings-simulation</h2>
+  <p>Du har 10.000 kr. Hvert år sker der noget med markedet. Du skal vælge, hvad du gør. Se hvad der sker!</p>
+
+  <div id="simContainer"></div>
+  <div id="simResult" style="display:none"></div>
+
+  <h2>De vigtigste ting at huske</h2>
+  <div class="card">
+    <p><strong>1.</strong> Investering er at lade dine penge arbejde over lang tid — ikke at blive rig hurtigt.</p>
+    <p><strong>2.</strong> Risiko og afkast hænger altid sammen. Ingen gratis frokost.</p>
+    <p><strong>3.</strong> Spredning (diversificering) er den vigtigste beskyttelse mod tab.</p>
+    <p><strong>4.</strong> Tid er vigtigere end beløb — start tidligt, selv med lidt.</p>
+    <p><strong>5.</strong> Investér aldrig i noget, du ikke forstår.</p>
+  </div>
+
+  <div class="warn-box"><strong>Vigtigt:</strong> Alt indhold i PengeRo Skole er til undervisningsbrug. Det er ikke investeringsrådgivning. Tal altid med en voksen eller rådgiver, før du træffer beslutninger om rigtige penge.</div>
+
+  <div class="nav-btns">
+    <button class="btn-outline" onclick="go('inflation')">← Inflation</button>
+    <div></div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+// NAV
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const map={budget:0,inflation:1,invest:2};
+  if(map[id]!==undefined)document.querySelectorAll('.sb-item')[map[id]].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<900){document.getElementById('sb').classList.remove('open');document.getElementById('sbOv').classList.remove('open')}
+  if(id==='budget')calcBudget();
+  if(id==='inflation')calcInflation();
+  if(id==='invest'){calcRisk();initSim()}
+}
+function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('sbOv').classList.toggle('open')}
+function fmt(n){return Math.round(n).toLocaleString('da-DK')}
+
+// ===== BUDGET MODULE =====
+const budgetItems=[
+  {emoji:'🏠',name:'Husleje',hint:'Lejlighed i din by',def:6500,color:'#1B7A6E'},
+  {emoji:'🍕',name:'Mad & dagligvarer',hint:'Supermarked, frokost',def:3500,color:'#D4882A'},
+  {emoji:'🚌',name:'Transport',hint:'Bus, tog eller bil',def:800,color:'#7C3AED'},
+  {emoji:'📱',name:'Telefon & internet',hint:'Abonnement',def:350,color:'#2563EB'},
+  {emoji:'💡',name:'El, vand & varme',hint:'Fællesudgifter/forsyning',def:900,color:'#059669'},
+  {emoji:'🛡️',name:'Forsikringer',hint:'Indbo, ulykke, sundhed',def:500,color:'#DC2626'},
+  {emoji:'👕',name:'Tøj',hint:'Gennemsnitligt pr. måned',def:400,color:'#DB2777'},
+  {emoji:'🎬',name:'Underholdning',hint:'Streaming, biograf, hobby',def:600,color:'#8B5CF6'},
+  {emoji:'💊',name:'Sundhed & personlig pleje',hint:'Medicin, frisør, tandlæge',def:300,color:'#F59E0B'},
+  {emoji:'🐷',name:'Opsparing',hint:'Det du lægger til side',def:1500,color:'#0EA5E9'},
+  {emoji:'❓',name:'Uforudsete udgifter',hint:'Buffer til overraskelser',def:500,color:'#6B7280'},
+];
+
+function buildBudget(){
+  const c=document.getElementById('budgetCats');
+  c.innerHTML=budgetItems.map((item,i)=>`
+    <div class="budget-row">
+      <div class="budget-emoji">${item.emoji}</div>
+      <div class="budget-name">${item.name}<small>${item.hint}</small></div>
+      <input type="number" class="budget-input" id="bi${i}" value="${item.def}" min="0" step="50" oninput="calcBudget()">
+      <div class="budget-pct" id="bp${i}">0%</div>
+    </div>`).join('');
+  calcBudget();
+}
+
+function calcBudget(){
+  const income=parseFloat(document.getElementById('budgetIncome').value)||22000;
+  let total=0;
+  const vals=[];
+  budgetItems.forEach((item,i)=>{
+    const v=parseFloat(document.getElementById('bi'+i).value)||0;
+    vals.push(v);total+=v;
+    const pct=income>0?(v/income*100).toFixed(0)+'%':'0%';
+    document.getElementById('bp'+i).textContent=pct;
+  });
+  const bal=income-total;
+  const el=document.getElementById('budgetBalance');
+  el.className='budget-balance '+(bal>0?'positive':bal<0?'negative':'zero');
+  el.innerHTML=`<span class="big">${bal>=0?'+':''}${fmt(bal)} kr.</span>${bal>0?'Du har penge til overs!':bal<0?'Dit budget hænger ikke sammen!':'Præcis i nul — ingen buffer'}`;
+  drawPie(vals);
+}
+
+function drawPie(vals){
+  const canvas=document.getElementById('pieChart');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=220*dpr;canvas.height=220*dpr;
+  canvas.style.width='220px';canvas.style.height='220px';
+  ctx.scale(dpr,dpr);
+  const cx=110,cy=110,r=90;
+  const total=vals.reduce((a,b)=>a+b,0)||1;
+  let angle=-Math.PI/2;
+  vals.forEach((v,i)=>{
+    const slice=v/total*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+slice);
+    ctx.closePath();ctx.fillStyle=budgetItems[i].color;ctx.fill();
+    angle+=slice;
+  });
+  // center hole
+  ctx.beginPath();ctx.arc(cx,cy,50,0,Math.PI*2);ctx.fillStyle='#FAFAF5';ctx.fill();
+  ctx.font='700 14px Work Sans';ctx.fillStyle='#1A1D20';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(fmt(total)+' kr.',cx,cy);
+
+  // legend
+  const leg=document.getElementById('pieLegend');
+  leg.innerHTML=budgetItems.map((item,i)=>{
+    const pct=total>0?(vals[i]/total*100).toFixed(0):'0';
+    return vals[i]>0?`<div class="pie-legend-item"><span class="pie-dot" style="background:${item.color}"></span>${item.emoji} ${item.name}<span class="pie-val">${fmt(vals[i])} kr. (${pct}%)</span></div>`:'';
+  }).join('');
+}
+
+// ===== INFLATION MODULE =====
+function calcInflation(){
+  const amt=parseFloat(document.getElementById('inflAmt').value)||100000;
+  const rate=parseFloat(document.getElementById('inflRate').value)||2.5;
+  document.getElementById('inflRateVal').textContent=rate+'%';
+
+  const years=[5,10,15,20,30];
+  const vals=years.map(y=>amt*Math.pow(1-rate/100,y));
+
+  document.getElementById('inflResult').innerHTML=years.map((y,i)=>`
+    <div class="result-item">
+      <div class="result-num">${fmt(vals[i])} kr.</div>
+      <div class="result-label">Købekraft efter ${y} år</div>
+    </div>`).join('');
+
+  // chart
+  const canvas=document.getElementById('inflChart');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.parentElement.getBoundingClientRect();
+  const W=rect.width,H=240;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.scale(dpr,dpr);
+
+  const pT=16,pB=28,pL=60,pR=12,cW=W-pL-pR,cH=H-pT-pB;
+  ctx.fillStyle='#FAFAF5';ctx.fillRect(0,0,W,H);
+
+  // grid
+  for(let i=0;i<=4;i++){
+    const y=pT+(cH/4)*i;
+    ctx.strokeStyle='#E5E7EB';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+    const v=amt-(amt/4*i);
+    ctx.fillStyle='#9CA3AF';ctx.font='10px Work Sans';ctx.textAlign='right';
+    ctx.fillText(fmt(v)+' kr.',pL-6,y+3);
+  }
+
+  const maxYr=30;
+  // nominal line (flat)
+  ctx.beginPath();
+  ctx.moveTo(pL,pT);ctx.lineTo(pL+cW,pT);
+  ctx.strokeStyle='rgba(156,163,175,.3)';ctx.lineWidth=2;ctx.setLineDash([5,5]);ctx.stroke();ctx.setLineDash([]);
+
+  // real value line
+  ctx.beginPath();
+  for(let y=0;y<=maxYr;y++){
+    const v=amt*Math.pow(1-rate/100,y);
+    const x=pL+(y/maxYr)*cW;
+    const yy=pT+cH-(v/amt)*cH;
+    y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);
+  }
+  ctx.strokeStyle='#D85A42';ctx.lineWidth=2.5;ctx.stroke();
+
+  // fill
+  ctx.lineTo(pL+cW,pT+cH);ctx.lineTo(pL,pT+cH);ctx.closePath();
+  ctx.fillStyle='rgba(216,90,66,.08)';ctx.fill();
+
+  // x labels
+  ctx.textAlign='center';
+  for(let y=0;y<=maxYr;y+=5){
+    ctx.fillStyle='#9CA3AF';ctx.fillText(y+' år',pL+(y/maxYr)*cW,H-6);
+  }
+}
+
+// build price table
+function buildPriceTable(){
+  const prices=[
+    {item:'En stor pizza',y1995:'55 kr.',y2010:'75 kr.',y2025:'110 kr.'},
+    {item:'En biografbillet',y1995:'50 kr.',y2010:'85 kr.',y2025:'130 kr.'},
+    {item:'En liter mælk',y1995:'4,50 kr.',y2010:'6,50 kr.',y2025:'11 kr.'},
+    {item:'En buskort (md.)',y1995:'280 kr.',y2010:'420 kr.',y2025:'640 kr.'},
+    {item:'En iPhone (nyeste)',y1995:'\u2014',y2010:'4.000 kr.',y2025:'10.000 kr.'},
+  ];
+  document.getElementById('priceTable').innerHTML=`<table>
+    <tr><th>Vare</th><th>ca. 1995</th><th>ca. 2010</th><th>ca. 2025</th></tr>
+    ${prices.map(p=>`<tr><td>${p.item}</td><td>${p.y1995}</td><td>${p.y2010}</td><td>${p.y2025}</td></tr>`).join('')}
+  </table><p style="font-size:.75rem;color:var(--gray-l);margin-top:4px">*Omtrentlige priser til illustration. Faktiske priser varierer.</p>`;
+}
+
+// ===== INVEST MODULE =====
+const riskProfiles=[
+  {name:'Bankkonto',rate:1,risk:'Ingen',desc:'Dine penge er sikre, men de vokser næsten ikke. Inflationen spiser dem langsomt.',color:'var(--teal)'},
+  {name:'Obligationer',rate:3,risk:'Meget lav',desc:'En anelse bedre end banken. Stabile men beskedne afkast.',color:'var(--teal-l)'},
+  {name:'Balanceret fond',rate:7,risk:'Moderat',desc:'En blanding af aktier og obligationer. Kan svinge op og ned, men vokser typisk over tid.',color:'var(--amber)'},
+  {name:'Aktiefond',rate:10,risk:'Mellem-høj',desc:'Historisk det bedste langsigtede afkast, men med større svingninger undervejs.',color:'var(--amber-d)'},
+  {name:'Enkeltaktier/krypto',rate:0,risk:'Meget høj',desc:'Kan give kæmpe afkast — eller kæmpe tab. Uforudsigeligt. Ikke anbefalet for begyndere.',color:'var(--coral)'},
+];
+
+function calcRisk(){
+  const level=parseInt(document.getElementById('riskSlider').value);
+  const p=riskProfiles[level];
+  document.getElementById('riskLabel').textContent=p.name+(p.rate>0?' ('+p.rate+'%)':' (???)');
+
+  const start=10000;
+  if(level<4){
+    const end=start*Math.pow(1+p.rate/100,10);
+    document.getElementById('riskResult').innerHTML=`
+      <div class="result-item"><div class="result-num">${fmt(start)} kr.</div><div class="result-label">Du starter med</div></div>
+      <div class="result-item"><div class="result-num" style="color:${p.color}">${fmt(end)} kr.</div><div class="result-label">Estimeret efter 10 år</div></div>
+      <div class="result-item"><div class="result-num">+${fmt(end-start)} kr.</div><div class="result-label">Vækst</div></div>
+      <div class="result-item"><div class="result-num">${p.risk}</div><div class="result-label">Risikoniveau</div></div>`;
+  } else {
+    document.getElementById('riskResult').innerHTML=`
+      <div class="result-item"><div class="result-num">${fmt(start)} kr.</div><div class="result-label">Du starter med</div></div>
+      <div class="result-item"><div class="result-num" style="color:var(--coral)">0 – 100.000 kr.</div><div class="result-label">Muligt resultat</div></div>
+      <div class="result-item"><div class="result-num">???</div><div class="result-label">Vækst</div></div>
+      <div class="result-item"><div class="result-num" style="color:var(--coral)">${p.risk}</div><div class="result-label">Risikoniveau</div></div>`;
+  }
+  document.getElementById('riskExplainer').innerHTML=`<div class="info-box"><strong>${p.name}:</strong> ${p.desc}</div>`;
+}
+
+// ===== SIMULATION =====
+const simEvents=[
+  {year:1,event:'Markedet stiger 12% — alt ser godt ud!',choices:[
+    {label:'Hold kursen',desc:'Lad pengene stå',effect:1.12},
+    {label:'Sælg og tag gevinst',desc:'Tag pengene ud',effect:1.01}
+  ]},
+  {year:2,event:'Markedet falder 8% — aviserne skriver krise!',choices:[
+    {label:'Bliv og vent',desc:'Hold fast i din plan',effect:0.92},
+    {label:'Sælg i panik',desc:'Ræd for at tabe mere',effect:0.95}
+  ]},
+  {year:3,event:'En ven anbefaler en "sikker" kryptovaluta.',choices:[
+    {label:'Hold din fond',desc:'Bliv i den brede fond',effect:1.09},
+    {label:'Skift til krypto',desc:'Flyt alt til krypto',effect:0.4}
+  ]},
+  {year:4,event:'Markedet stiger 15% — et fantastisk år.',choices:[
+    {label:'Hold kursen',desc:'Konsekvens er nøglen',effect:1.15},
+    {label:'Investér dobbelt',desc:'Lån penge for at investere mere',effect:1.25}
+  ]},
+  {year:5,event:'En ny pandemi skaber usikkerhed. Markedet falder 20%.',choices:[
+    {label:'Hold fast',desc:'Historien viser at det kommer igen',effect:0.80},
+    {label:'Sælg alt',desc:'Beskyt hvad du har',effect:0.85}
+  ]},
+  {year:6,event:'Markedet vender. Stiger 25% på ét år.',choices:[
+    {label:'Du er stadig investeret',desc:'Fantastisk — du er med!',effect:1.25},
+    {label:'Du solgte i år 5',desc:'Du missede opsvinget',effect:1.02}
+  ]},
+  {year:7,event:'Stille år. Markedet stiger 5%.',choices:[
+    {label:'Fortsæt planen',desc:'Kedelige år er gode år',effect:1.05},
+    {label:'Prøv noget nyt',desc:'Find en mere spændende investering',effect:1.03}
+  ]},
+  {year:8,event:'En aktie-guru lover 50% afkast om året.',choices:[
+    {label:'Ignorér og hold kursen',desc:'Hvis det lyder for godt...',effect:1.08},
+    {label:'Følg guruen',desc:'Måske har han ret?',effect:0.60}
+  ]},
+  {year:9,event:'Markedet stiger stabilt 10%.',choices:[
+    {label:'Godt gået — du holder fast',desc:'Tålmodighed betaler sig',effect:1.10},
+    {label:'Tag gevinsten nu',desc:'Du har nok',effect:1.01}
+  ]},
+  {year:10,event:'Sidste år. Du kigger tilbage på din rejse.',choices:[
+    {label:'Evaluér og lær',desc:'Se dit samlede resultat',effect:1.07},
+    {label:'Evaluér og lær',desc:'Se dit samlede resultat',effect:1.07}
+  ]},
+];
+let simBalance=10000;
+let simYearIndex=0;
+let simChoices=[];
+
+function initSim(){
+  simBalance=10000;simYearIndex=0;simChoices=[];
+  document.getElementById('simResult').style.display='none';
+  renderSimYear();
+}
+
+function renderSimYear(){
+  const c=document.getElementById('simContainer');
+  if(simYearIndex>=simEvents.length){showSimResult();return}
+  const ev=simEvents[simYearIndex];
+  c.innerHTML=`
+    <div class="sim-year active-year">
+      <div class="sim-header">
+        <div class="sim-year-label">År ${ev.year} af 10</div>
+        <div class="sim-balance">Saldo: ${fmt(simBalance)} kr.</div>
+      </div>
+      <div class="sim-event"><strong>Hvad sker der:</strong> ${ev.event}</div>
+      <p style="font-weight:600;font-size:.88rem;margin-bottom:8px">Hvad gør du?</p>
+      <div class="sim-choices">
+        ${ev.choices.map((ch,i)=>`
+          <button class="sim-choice" onclick="simPick(${i})">
+            <span class="choice-label">${ch.label}</span>
+            <span class="choice-desc">${ch.desc}</span>
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function simPick(choiceIdx){
+  const ev=simEvents[simYearIndex];
+  const choice=ev.choices[choiceIdx];
+  simBalance=Math.round(simBalance*choice.effect);
+  simChoices.push({year:ev.year,choice:choice.label,effect:choice.effect,balance:simBalance});
+  simYearIndex++;
+  renderSimYear();
+}
+
+function showSimResult(){
+  const c=document.getElementById('simContainer');c.innerHTML='';
+  const r=document.getElementById('simResult');r.style.display='block';
+  const gain=simBalance-10000;
+  const pct=((simBalance/10000-1)*100).toFixed(0);
+  const good=simBalance>=10000*Math.pow(1.07,10)*.7;
+  r.innerHTML=`
+    <div class="card" style="text-align:center;padding:32px">
+      <div style="font-size:2.5rem;margin-bottom:8px">${good?'🏆':'📉'}</div>
+      <h2 style="margin:0 0 4px;color:${gain>=0?'var(--teal)':'var(--coral)'}">${fmt(simBalance)} kr.</h2>
+      <p style="color:var(--gray);margin-bottom:16px">Du startede med 10.000 kr. · ${gain>=0?'+':''} ${fmt(gain)} kr. (${pct}%)</p>
+      <p style="font-size:.92rem;line-height:1.6;max-width:500px;margin:0 auto">${good
+        ?'Godt gået! Ved at holde kursen og undgå panik og fristelser har du opbygget reel formue. Tålmodighed og konsekvens er nøglen.'
+        :'Hmm — nogle af dine valg kostede dyrt. Panikhandler, fristelser og "sikre tips" er de største fjender for langsigtede investorer. Prøv igen og se, hvad der sker, hvis du holder fast!'
+      }</p>
+      <button class="btn-primary" style="margin-top:16px" onclick="initSim()">Prøv igen</button>
+    </div>
+    <h3>Din rejse år for år</h3>
+    <table>
+      <tr><th>År</th><th>Dit valg</th><th>Effekt</th><th>Saldo</th></tr>
+      ${simChoices.map(c=>`<tr><td>År ${c.year}</td><td>${c.choice}</td><td>${c.effect>=1?'+':''} ${((c.effect-1)*100).toFixed(0)}%</td><td>${fmt(c.balance)} kr.</td></tr>`).join('')}
+    </table>`;
+}
+
+// INIT
+buildBudget();
+buildPriceTable();
+calcInflation();
+calcRisk();
+initSim();
+</script>
+</body>
+</html>
